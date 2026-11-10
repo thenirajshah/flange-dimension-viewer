@@ -1,51 +1,63 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10203f">
-<title>ANSI B16.5 Flange Dimension Viewer</title>
-<link rel="stylesheet" href="./style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14264c">
+  <meta name="description" content="ANSI B16.5 flange dimension viewer for Class 150 and Class 300.">
+  <title>ANSI B16.5 Flange Dimension Viewer</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
-<body><main class="wrap">
-<header class="hero"><h1>Flange Dimension Viewer</h1><p>ANSI B16.5 · Class 150 &amp; Class 300 · Dimensions in mm · Reference chart</p><span class="tag">42 source records · 21 sizes × 2 classes</span></header>
-<section class="panel"><h2 class="section-title">Select size & view dimensions</h2><div class="controls">
-<div class="field"><label for="sizeSelect">1. Nominal Pipe Size (NB)</label><select id="sizeSelect"><option value="">Select NB / Size</option></select></div>
-<div class="field"><label for="classSelect">2. Flange Class</label><select id="classSelect" disabled><option value="">Select NB first</option><option value="150">Class 150</option><option value="300">Class 300</option></select></div>
-<div class="field"><label for="typeSelect">Flange Type Filter</label><select id="typeSelect"><option value="all">All dimensions</option><option value="wn">Welding Neck</option><option value="so">Slip-On / Screwed / Socket Weld</option><option value="lj">Lap Joint</option></select></div>
-<div class="field"><label for="searchInput">Search dimension</label><input id="searchInput" type="search" placeholder="Search name, code or value…"></div>
-</div><p class="hint">Pehle NB size select karein, phir Class 150 ya 300. Type filter aur search se required dimensions jaldi find karein.</p></section>
-<section class="results" id="result" aria-live="polite"><div class="empty"><b>Flange size select karein</b>Dimensions dekhne ke liye NB aur flange class choose karein.</div></section>
-<div class="footer">Reference: supplied ANSI B16.5 flange chart (FLANGE_DETAILS_fixed(1).pdf), page 1. Source blanks are displayed as “Not listed in source”; no values are estimated.</div>
-</main>
-<script>
-<script>
-fetch("./data.json")
-  .then(response => {
-    if (!response.ok) throw new Error("Could not load flange data");
-    return response.json();
-  })
-  .then(DATA => {
-    const sizeSelect=document.getElementById('sizeSelect'),classSelect=document.getElementById('classSelect'),typeSelect=document.getElementById('typeSelect'),searchInput=document.getElementById('searchInput'),result=document.getElementById('result');
-    const allSizes=[...new Set([...DATA.classes['150'],...DATA.classes['300']].map(r=>r.nominal_pipe_size_in))];
-    allSizes.forEach(size=>{const op=document.createElement('option');op.value=size;op.textContent=size+' inch';sizeSelect.appendChild(op)});
-    const typeKeys={wn:['length_through_hub_Y_welding_neck_mm'],so:['slipon_socket_weld_bore_diameter_B_mm','length_through_hub_Y_slipon_screwed_socket_weld_mm','depth_of_socket_D_mm'],lj:['lap_joint_bore_diameter_B_mm','length_through_hub_Y_lap_joint_mm']};
-    function showEmpty(title,desc){result.innerHTML=`<div class="empty"><b>${title}</b>${desc}</div>`}
-    function render(){const size=sizeSelect.value,cls=classSelect.value;if(!size){classSelect.disabled=true;classSelect.value='';showEmpty('Flange size select karein','Dimensions dekhne ke liye NB aur flange class choose karein.');return}classSelect.disabled=false;if(!cls){showEmpty('Flange class select karein','Ab Class 150 ya Class 300 choose karein.');return}
-    const row=(DATA.classes[cls]||[]).find(r=>r.nominal_pipe_size_in===size);if(!row){showEmpty('Data available nahi hai','Is NB aur class ka record source mein nahi mila.');return}
-    let cols=DATA.columns.filter(c=>c.key!=='nominal_pipe_size_in');const typ=typeSelect.value;if(typ!=='all'){const keys=typeKeys[typ];cols=cols.filter(c=>!c.key.includes('welding_neck')&&!c.key.includes('slipon_socket')&&!c.key.includes('lap_joint')&&!c.key.includes('depth_of_socket_D_mm')||keys.includes(c.key));}
-    const q=searchInput.value.trim().toLowerCase();if(q)cols=cols.filter(c=>(c.label+' '+c.key+' '+String(row[c.key]??'')).toLowerCase().includes(q));
-    if(!cols.length){showEmpty('Koi matching dimension nahi mili','Search text ya flange type filter change karein.');return}
-    const cards=cols.map(c=>{const v=row[c.key],value=v===null||v===undefined?'Not listed in source':v,unit=c.unit==='count'?'':` <span class="unit">${c.unit}</span>`;return `<div class="item"><div class="name">${c.label}</div><div class="value">${value}${unit}</div></div>`}).join('');
-    let note='';if(row.asterisk_marked||!row.ansi_b16_5_covered)note='<div class="notes"><strong>Source note:</strong> *22 is marked as not covered by ANSI B16.5.</div>';
-    const sourceNotes='<div class="notes"><strong>Notes:</strong> 1.6 mm raised face is included in flange thickness and length. Marked dimension denotes the O.D. of pipe in welding neck flange.</div>';
-    result.innerHTML=`<div class="result-head"><div><h2>${size} inch Flange</h2><span class="count">${cols.length} dimensions shown</span></div><span class="pill">Class ${cls}</span></div><div class="grid">${cards}</div>${note}${sourceNotes}`;
-    }
-    sizeSelect.addEventListener('change',()=>{classSelect.value='';render()});classSelect.addEventListener('change',render);typeSelect.addEventListener('change',render);searchInput.addEventListener('input',render);
-    
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("result").innerHTML =
-      '<div class="empty"><b>Data load nahi ho paya</b>Page refresh karein ya internet connection check karein.</div>';
-  });
-</script></body></html>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrow">ENGINEERING DIMENSION REFERENCE</div>
+      <h1>Flange Dimension Viewer</h1>
+      <p>ANSI B16.5 · Class 150 &amp; Class 300 · Dimensions in mm</p>
+      <span class="tag">42 source records · 21 nominal sizes × 2 classes</span>
+    </header>
+
+    <section class="panel" aria-labelledby="selectionTitle">
+      <h2 class="section-title" id="selectionTitle">Select flange dimensions</h2>
+      <div class="controls">
+        <div class="field">
+          <label for="sizeSelect">1. Nominal Pipe Size</label>
+          <select id="sizeSelect">
+            <option value="">Select Size (Inch / NB)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="classSelect">2. Flange Class</label>
+          <select id="classSelect" disabled>
+            <option value="">First select pipe size</option>
+            <option value="150">Class 150</option>
+            <option value="300">Class 300</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="typeSelect">Flange Type Filter</label>
+          <select id="typeSelect">
+            <option value="all">All dimensions</option>
+            <option value="wn">Welding Neck</option>
+            <option value="so">Slip-On / Screwed / Socket Weld</option>
+            <option value="lj">Lap Joint</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="searchInput">Search dimension</label>
+          <input id="searchInput" type="search" placeholder="Search name, code or value…" autocomplete="off">
+        </div>
+      </div>
+      <p class="hint">Pehle Nominal Pipe Size (Inch / NB) select karein, phir Class 150 ya Class 300 choose karein. Search aur type filter se dimensions find karein.</p>
+    </section>
+
+    <section class="results" id="result" aria-live="polite">
+      <div class="empty"><b>Flange size select karein</b>Dimensions dekhne ke liye pehle size, phir class choose karein.</div>
+    </section>
+
+    <footer class="footer">Reference: supplied FLANGE_DETAILS_fixed(1).pdf · Page 1 · Source blanks are shown as “Not listed in source”; no values are estimated.</footer>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
