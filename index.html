@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,57 +6,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#14264c">
   <meta name="description" content="ANSI B16.5 flange dimension viewer for Class 150 and Class 300.">
+
   <title>ANSI B16.5 Flange Dimension Viewer</title>
+
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
   <main class="wrap">
+
     <header class="hero">
       <div class="eyebrow">ENGINEERING DIMENSION REFERENCE</div>
+
       <h1>Flange Dimension Viewer</h1>
+
       <p>ANSI B16.5 · Class 150 &amp; Class 300 · Dimensions in mm</p>
-      <span class="tag">42 source records · 21 nominal sizes × 2 classes</span>
+
+      <span class="tag">42 Dimension Records · 21 Nominal Sizes × 2 Classes</span>
     </header>
 
     <section class="panel" aria-labelledby="selectionTitle">
-      <h2 class="section-title" id="selectionTitle">Select flange dimensions</h2>
+
+      <h2 class="section-title" id="selectionTitle">
+        Select Flange Dimensions
+      </h2>
+
       <div class="controls">
+
         <div class="field">
           <label for="sizeSelect">1. Nominal Pipe Size</label>
+
           <select id="sizeSelect">
             <option value="">Select Size (Inch / NB)</option>
           </select>
         </div>
+
         <div class="field">
           <label for="classSelect">2. Flange Class</label>
+
           <select id="classSelect" disabled>
-            <option value="">First select pipe size</option>
+            <option value="">First Select Pipe Size</option>
             <option value="150">Class 150</option>
             <option value="300">Class 300</option>
           </select>
         </div>
-        <div class="field">
-          <label for="typeSelect">Flange Type Filter</label>
-          <select id="typeSelect">
-            <option value="all">All dimensions</option>
-            <option value="wn">Welding Neck</option>
-            <option value="so">Slip-On / Screwed / Socket Weld</option>
-            <option value="lj">Lap Joint</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="searchInput">Search dimension</label>
-          <input id="searchInput" type="search" placeholder="Search name, code or value…" autocomplete="off">
-        </div>
+
       </div>
-      <p class="hint">Pehle Nominal Pipe Size (Inch / NB) select karein, phir Class 150 ya Class 300 choose karein. Search aur type filter se dimensions find karein.</p>
+
+      <p class="hint">
+        First select the Nominal Pipe Size (Inch / NB), then choose
+        Class 150 or Class 300 to view the flange dimensions.
+      </p>
+
     </section>
 
     <section class="results" id="result" aria-live="polite">
-      <div class="empty"><b>Flange size select karein</b>Dimensions dekhne ke liye pehle size, phir class choose karein.</div>
+
+      <div class="empty">
+        <b>Select a Flange Size</b>
+        Choose a nominal pipe size and flange class to view the dimensions.
+      </div>
+
     </section>
 
-    <footer class="footer">Reference: supplied FLANGE_DETAILS_fixed(1).pdf · Page 1 · Source blanks are shown as “Not listed in source”; no values are estimated.</footer>
+    <footer class="footer">
+      ANSI B16.5 Flange Dimensions · All dimensions are in millimeters (mm).
+    </footer>
+
   </main>
 
   <script src="./app.js" defer></script>
